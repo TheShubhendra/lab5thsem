@@ -1,0 +1,4 @@
+echo "Filename: dtcal"
+echo "Line count: `cat dtcal | wc -l`"
+echo "Word count: `cat dtcal | wc -w`"
+echo "Charcount: `cat dtcal | wc -m`"

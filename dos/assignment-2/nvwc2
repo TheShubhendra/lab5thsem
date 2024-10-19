@@ -1,0 +1,3 @@
+file=$1
+echo "filename	linecount	wordcount	charcount"
+echo "$file $(wc -l < "$file")	$(wc -w < "$file")	$(wc -m < "$file")"

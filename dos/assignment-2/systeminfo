@@ -1,0 +1,4 @@
+echo "Username: `whoami`"
+echo "Shell: $SHELL"
+echo "Current Working Directory: `pwd`"
+echo "Files `ls`"

@@ -1,0 +1,1 @@
+print("Carry an umbrella" if input("Is it raining? (yes\\no)") == "yes" else "Bye")

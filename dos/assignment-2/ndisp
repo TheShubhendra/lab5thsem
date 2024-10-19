@@ -1,0 +1,6 @@
+n=$1
+m=$2
+file=$3
+head -n $n "$file"
+tail -n $m "$file"
+
