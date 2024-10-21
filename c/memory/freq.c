@@ -1,10 +1,15 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<unistd.h>
 
 #define BUFFER_SIZE 100
 
+
+
 int main(int argc, char* argv[]){
+	int frq[26];	
+
 	if(argc<2){
 	    perror("No file provided");
 	    exit(0);
@@ -12,6 +17,7 @@ int main(int argc, char* argv[]){
 	char* file_path = argv[1];
 	printf("%s\n", file_path);
 	FILE* fptr = fopen(file_path, "r");
+        FILE* pipe = fopen("/tmp/pipe", "w");
 	if (fptr == NULL){
 		perror("Failed to open this file");
 		exit(1);	
@@ -31,10 +37,22 @@ int main(int argc, char* argv[]){
 		memcpy(content + total_size - bytes_read, buffer, bytes_read);
 		printf("%ld bytes read | Total bytes: %ld\n", bytes_read, total_size);
 	}
-	printf("%s", content);
+	//printf("%s", content);
+	for(int i=0; i<total_size; i++){
+	    if (content[i]>='a' && content[i]<='z'){
+	        frq[content[i] - 'a']++;
+	    }
+	}
+	for(int i=0; i<26; i++){
+	    //printf("Frequency of %c is %d\n",'a'+i, frq[i]);
+	    fprintf(pipe,"Frequency of %c is %d\n",'a'+i, frq[i]);
+	    fflush(pipe);
+	    sleep(1);
+	}
+	fclose(pipe);
 	fclose(fptr);
 	free(content);
-
+        
 	return 0;
 }
 
