@@ -51,8 +51,8 @@ int main(){
         perror("Failed to bind the socket");
         exit(1);
     }
-
-    sendmsg(server_fd, )
+ 
+    sendmsg(server_fd, size_t);
 
     return 0;
 

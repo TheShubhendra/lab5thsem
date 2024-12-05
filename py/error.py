@@ -5,46 +5,4 @@
 #     class out:
 #         def println(*args, **kwargs):
 #             print(*args, **kwargs)
-`   `
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 print(10>5 or 5/0<10)
