@@ -16,13 +16,18 @@ using namespace sf;
 
 
 class Pipe{
-    const float speed = 0.3;
+    const float speed = 0.35;
     RectangleShape upper, lower;
     Clock clock;
+    static Clock spawnClock;
+    static double spawnElapsed;
+
     public:
+    static int score;
+    static vector<Pipe*> pipes;
     Pipe(){
         this->clock = Clock();
-        const int gap = 120;
+        const int gap = 130;
         int upper_height = (std::rand()%400)+100;
         upper_height = (upper_height % 400) + 100;
 
@@ -51,15 +56,50 @@ class Pipe{
     bool isColliding(FloatRect bounds){
         return this->upper.getGlobalBounds().intersects(bounds) || this->lower.getGlobalBounds().intersects(bounds);
     }
+
+    bool isOut(){
+        return this->upper.getPosition().x <0;
+    }
+
+    static void drawAll(RenderWindow* window){
+        for (int i = 0; i < pipes.size(); i++){
+            pipes[i]->draw(window);
+            pipes[i]->move();
+            if (pipes[i]->isOut()){
+                pipes.erase(pipes.begin() + i);
+            }
+            if (pipes[i]->)
+        }
+
+
+        spawnElapsed += spawnClock.restart().asSeconds();
+        if(spawnElapsed >= 2){
+            spawnElapsed = 0.0;
+            Pipe::addPipe();
+        }
+    }
+
+    static void addPipe(){
+        pipes.push_back(new Pipe());
+    }
 };
 
+std::vector<Pipe*> Pipe::pipes;
+double Pipe::spawnElapsed;
+Clock Pipe::spawnClock;
+int Pipe::score;
 
 class Character{
 
 
+
     Texture texture1, texture2, texture3;
+    Clock clock;
+    float secondsElapsed = 0;
+    int currentTexture = 0;
 
     public:
+
     Sprite sprite;
     Character(){
         texture1.loadFromFile("assets/character/idle/frame-1.png");
@@ -79,7 +119,21 @@ class Character{
             sprite.setPosition(Vector2f(sprite.getPosition().x, sprite.getPosition().y + 0.2));
         }
         window->draw(this->sprite);
+        secondsElapsed += clock.getElapsedTime().asSeconds();
+        if (secondsElapsed > 3){
+            clock.restart();
+            secondsElapsed = 0;
+            if (currentTexture == 0){
+                currentTexture = 1;
+                sprite.setTexture(texture2);
+            }else{
+                currentTexture = 0;
+                sprite.setTexture(texture1);
+            }
+            
+        }
     }
+
 
     bool checkColision(std::vector<Pipe*> pipes){
         for (int i = 0; i < pipes.size(); i++){
@@ -96,6 +150,7 @@ class Character{
     void mouseScroll(int delta){
         sprite.setPosition(Vector2f(sprite.getPosition().x, sprite.getPosition().y - 20*delta));
     }
+
 };
 
 
@@ -129,14 +184,10 @@ int main()
     spriteBackground.scale(Vector2f(WIDTH/textureBackground.getSize().x,HEIGHT/textureBackground.getSize().y));
 
 
-    Pipe pipe = Pipe();
     Character character = Character();
-    std::vector<Pipe*> pipes;
-    pipes.push_back(&pipe);
-    Time pipeSpawnElapsed = pipeSpawnClock.restart();
-    double spawnElapsed = 0;
+
+    Pipe::pipes.push_back(new Pipe());
     sf::Event event;
-    int score=0;
     while (window.isOpen())
     {
 
@@ -147,39 +198,22 @@ int main()
 
         window.clear();
         window.draw(spriteBackground);
-        scoreBoard.setString("Score: "+to_string(score));
+        scoreBoard.setString("Score: "+to_string(Pipe::score));
         window.draw(scoreBoard);
         character.draw(&window);
         
 
-        for (Pipe* pipe: pipes){
-            (*pipe).draw(&window);
-            (*pipe).move();
-        }
+        Pipe::drawAll(&window);
 
-        spawnElapsed += pipeSpawnClock.restart().asSeconds();
-        if(spawnElapsed >= 2){
-            spawnElapsed = 0.0;
-            pipes.push_back(new Pipe());
-            if (pipes.size()>=4){
-                score++;
-            }
-            if (pipes.size()>10){
-                pipes.erase(pipes.begin());
-            }
-        }
 
         window.display();
-        if(character.checkColision(pipes)){
+        if(character.checkColision(Pipe::pipes)){
             window.clear();
             window.draw(spriteBackground);
-            scoreBoard.setString("Score: "+to_string(score));
+            scoreBoard.setString("Score: "+to_string(Pipe::score));
             window.draw(scoreBoard);
             character.draw(&window);
-                    for (Pipe* pipe: pipes){
-            (*pipe).draw(&window);
-            (*pipe).move();
-        }
+            Pipe::drawAll(&window);
             window.display();
             break;
         }
