@@ -16,9 +16,13 @@ using namespace sf;
 
 
 class Pipe{
-    const float speed = 0.35;
-    RectangleShape upper, lower;
+    static float speed, acceleration;
+    static int gap;
+    Sprite upper, lower;
+    Texture texture;
     Clock clock;
+    bool passed;
+
     static Clock spawnClock;
     static double spawnElapsed;
 
@@ -27,19 +31,24 @@ class Pipe{
     static vector<Pipe*> pipes;
     Pipe(){
         this->clock = Clock();
-        const int gap = 130;
         int upper_height = (std::rand()%400)+100;
         upper_height = (upper_height % 400) + 100;
 
         int lower_height = HEIGHT-upper_height-gap;
-        const int width = 20;
-        this->upper = RectangleShape(sf::Vector2f(width, upper_height));
-        this->lower = RectangleShape(sf::Vector2f(width, lower_height));
+        const int width = 32;
+        texture.loadFromFile("assets/tile.png");
+        texture.setRepeated(true);
+
+        this->upper.setTexture(texture);
+        this->lower.setTexture(texture);
+
+        
+        this->upper.setTextureRect({0, 0, width, upper_height});
+        this->lower.setTextureRect({0, 0, width, lower_height});
+
         this->upper.setPosition(Vector2f(WIDTH-width, 0));
         this->lower.setPosition(Vector2f(WIDTH-width, HEIGHT-lower_height));
 
-        this->upper.setFillColor(Color::Black);
-        this->lower.setFillColor(Color::Black);
     }
 
     void draw(RenderWindow* window){
@@ -58,7 +67,7 @@ class Pipe{
     }
 
     bool isOut(){
-        return this->upper.getPosition().x <0;
+        return this->upper.getPosition().x <-50;
     }
 
     static void drawAll(RenderWindow* window){
@@ -68,15 +77,22 @@ class Pipe{
             if (pipes[i]->isOut()){
                 pipes.erase(pipes.begin() + i);
             }
-            if (pipes[i]->)
+            if (!pipes[i]->passed && pipes[i]->upper.getPosition().x<70){
+                score++;
+                pipes[i]->passed = true;
+                speed+=acceleration;
+                gap-=5;
+            }
         }
 
 
         spawnElapsed += spawnClock.restart().asSeconds();
-        if(spawnElapsed >= 2){
+        if(spawnElapsed >= 0.7/speed){
             spawnElapsed = 0.0;
             Pipe::addPipe();
         }
+
+
     }
 
     static void addPipe(){
@@ -88,6 +104,9 @@ std::vector<Pipe*> Pipe::pipes;
 double Pipe::spawnElapsed;
 Clock Pipe::spawnClock;
 int Pipe::score;
+float Pipe::speed = 0.35;
+float Pipe::acceleration = 0.04;
+int Pipe::gap = 200;
 
 class Character{
 
