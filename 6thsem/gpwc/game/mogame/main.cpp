@@ -3,7 +3,6 @@
 #include<stdlib.h>
 #include <unistd.h>
 
-
 #define WIDTH 1366
 #define HEIGHT 768
 #define PIPE_MOVEMENT_SPEED 0.05
@@ -17,11 +16,13 @@ using namespace sf;
 
 class Pipe{
     static float speed, acceleration;
+
     static int gap;
     Sprite upper, lower;
     Texture texture;
     Clock clock;
     bool passed;
+
 
     static Clock spawnClock;
     static double spawnElapsed;
@@ -29,6 +30,8 @@ class Pipe{
     public:
     static int score;
     static vector<Pipe*> pipes;
+    static Sprite coin;
+    static Texture coin_t;
     Pipe(){
         this->clock = Clock();
         int upper_height = (std::rand()%400)+100;
@@ -71,6 +74,7 @@ class Pipe{
     }
 
     static void drawAll(RenderWindow* window){
+        window->draw(coin);
         for (int i = 0; i < pipes.size(); i++){
             pipes[i]->draw(window);
             pipes[i]->move();
@@ -172,6 +176,41 @@ class Character{
 
 };
 
+class Background{
+        Sprite sa,sb,sc,sd,se;
+        Texture ta, tb, tc, td, te;
+
+        public:
+        Background(){
+            ta.loadFromFile("assets/background/1.png");
+            tb.loadFromFile("assets/background/2.png");
+            tc.loadFromFile("assets/background/3.png");
+            td.loadFromFile("assets/background/4.png");
+            te.loadFromFile("assets/background/5.png");
+
+            sa.setTexture(ta);
+            sb.setTexture(tb);
+            sc.setTexture(tc);
+            sd.setTexture(td);
+            se.setTexture(te);
+
+            sa.scale(Vector2f(WIDTH/ta.getSize().x,HEIGHT/ta.getSize().y));
+            sb.scale(Vector2f(WIDTH/tb.getSize().x,HEIGHT/tb.getSize().y));
+            sc.scale(Vector2f(WIDTH/tc.getSize().x,HEIGHT/tc.getSize().y));
+            sd.scale(Vector2f(WIDTH/td.getSize().x,HEIGHT/td.getSize().y));
+            se.scale(Vector2f(WIDTH/te.getSize().x,HEIGHT/te.getSize().y));
+        
+        }
+
+        void draw(RenderWindow *window){
+            window->draw(sa);
+            window->draw(sb);
+            window->draw(sc);
+            window->draw(sd);
+            window->draw(se);
+        }
+};
+
 
 int main()
 {
@@ -202,11 +241,19 @@ int main()
     spriteBackground.setPosition(0, 0);
     spriteBackground.scale(Vector2f(WIDTH/textureBackground.getSize().x,HEIGHT/textureBackground.getSize().y));
 
-
+    Background background = Background();
     Character character = Character();
 
     Pipe::pipes.push_back(new Pipe());
     sf::Event event;
+
+
+
+    Pipe::coin_t.loadFromFile("assets/coin.png");
+    // Pipe::coin.setTexture(Pipe::coin_t);
+    // Pipe::coin.setPosition(0, 0);
+    // Pipe::coin.scale(Vector2f(0.3, 0.3));
+
     while (window.isOpen())
     {
 
@@ -216,19 +263,18 @@ int main()
         }
 
         window.clear();
+        // background.draw(&window);
         window.draw(spriteBackground);
         scoreBoard.setString("Score: "+to_string(Pipe::score));
-        window.draw(scoreBoard);
         character.draw(&window);
-        
-
         Pipe::drawAll(&window);
-
+        window.draw(scoreBoard);
 
         window.display();
         if(character.checkColision(Pipe::pipes)){
             window.clear();
             window.draw(spriteBackground);
+            // background.draw(&window);
             scoreBoard.setString("Score: "+to_string(Pipe::score));
             window.draw(scoreBoard);
             character.draw(&window);
