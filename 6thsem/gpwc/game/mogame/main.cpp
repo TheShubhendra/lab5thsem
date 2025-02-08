@@ -2,6 +2,7 @@
 #include <iostream>
 #include<stdlib.h>
 #include <unistd.h>
+#include "pipe.hpp"
 
 #define WIDTH 1366
 #define HEIGHT 768
@@ -14,107 +15,11 @@ using namespace sf;
 
 
 
-class Pipe{
-    static float speed, acceleration;
-
-    static int gap;
-    Sprite upper, lower;
-    Texture texture;
-    Clock clock;
-    bool passed;
 
 
-    static Clock spawnClock;
-    static double spawnElapsed;
 
-    public:
-    static int score;
-    static vector<Pipe*> pipes;
-    static Sprite coin;
-    static Texture coin_t;
-    Pipe(){
-        this->clock = Clock();
-        int upper_height = (std::rand()%400)+100;
-        upper_height = (upper_height % 400) + 100;
-
-        int lower_height = HEIGHT-upper_height-gap;
-        const int width = 32;
-        texture.loadFromFile("assets/tile.png");
-        texture.setRepeated(true);
-
-        this->upper.setTexture(texture);
-        this->lower.setTexture(texture);
-
-        
-        this->upper.setTextureRect({0, 0, width, upper_height});
-        this->lower.setTextureRect({0, 0, width, lower_height});
-
-        this->upper.setPosition(Vector2f(WIDTH-width, 0));
-        this->lower.setPosition(Vector2f(WIDTH-width, HEIGHT-lower_height));
-
-    }
-
-    void draw(RenderWindow* window){
-        window->draw(this->lower);
-        window->draw(this->upper);
-    }
-
-    void move(){
-        Time time = clock.restart();
-        this->upper.setPosition(Vector2f(this->upper.getPosition().x - speed*time.asMilliseconds(), this->upper.getPosition().y));
-        this->lower.setPosition(Vector2f(this->lower.getPosition().x - speed*time.asMilliseconds(), this->lower.getPosition().y));
-    }
-
-    bool isColliding(FloatRect bounds){
-        return this->upper.getGlobalBounds().intersects(bounds) || this->lower.getGlobalBounds().intersects(bounds);
-    }
-
-    bool isOut(){
-        return this->upper.getPosition().x <-50;
-    }
-
-    static void drawAll(RenderWindow* window){
-        window->draw(coin);
-        for (int i = 0; i < pipes.size(); i++){
-            pipes[i]->draw(window);
-            pipes[i]->move();
-            if (pipes[i]->isOut()){
-                pipes.erase(pipes.begin() + i);
-            }
-            if (!pipes[i]->passed && pipes[i]->upper.getPosition().x<70){
-                score++;
-                pipes[i]->passed = true;
-                speed+=acceleration;
-                gap-=5;
-            }
-        }
-
-
-        spawnElapsed += spawnClock.restart().asSeconds();
-        if(spawnElapsed >= 0.7/speed){
-            spawnElapsed = 0.0;
-            Pipe::addPipe();
-        }
-
-
-    }
-
-    static void addPipe(){
-        pipes.push_back(new Pipe());
-    }
-};
-
-std::vector<Pipe*> Pipe::pipes;
-double Pipe::spawnElapsed;
-Clock Pipe::spawnClock;
-int Pipe::score;
-float Pipe::speed = 0.35;
-float Pipe::acceleration = 0.04;
-int Pipe::gap = 200;
 
 class Character{
-
-
 
     Texture texture1, texture2, texture3;
     Clock clock;
@@ -249,7 +154,7 @@ int main()
 
 
 
-    Pipe::coin_t.loadFromFile("assets/coin.png");
+    // Pipe::coin_t.loadFromFile("assets/coin.png");
     // Pipe::coin.setTexture(Pipe::coin_t);
     // Pipe::coin.setPosition(0, 0);
     // Pipe::coin.scale(Vector2f(0.3, 0.3));

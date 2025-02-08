@@ -15,10 +15,28 @@ class Shallow{
             cout << "Shallow Destructor called" << endl;
         }
 };
+class Deep{
+    public:
+        int *ptr;
+        Deep(int val){
+            // ptr = new int;
+            *ptr = val;
+        }
+
+        Deep(const Deep &obj){
+            ptr = new int;
+            *ptr = *obj.ptr;
+        }
+
+        ~Deep(){
+            delete ptr;
+            cout << "Shallow Destructor called" << endl;
+        }
+};
 
 
 int main(){
-    Shallow s1(10);
-    Shallow s2 = s1;
+    Deep s1(10);
+    Deep s2 = s1;
 
 }
