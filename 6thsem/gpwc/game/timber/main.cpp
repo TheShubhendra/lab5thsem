@@ -1,12 +1,14 @@
 #include <SFML/Graphics.hpp>
 
 #define WIDTH 1920
+#define HEIGHT 1080
 
 using namespace sf;
+using namespace std;
 
 
 int main(){
-    VideoMode vm(WIDTH, 1080);
+    VideoMode vm(WIDTH, HEIGHT);
     RenderWindow window(vm, "Timber");
 
     Texture backgroundTexture;
@@ -64,9 +66,47 @@ int main(){
     playerSprite.setPosition(WIDTH/2 - playerSprite.getGlobalBounds().width/2, treeSprite.getGlobalBounds().height-playerSprite.getGlobalBounds().height);
 
 
-    Sprite branch
+    Texture branchTexture;
+    branchTexture.loadFromFile("graphics/branch.png");
+
+
+    Sprite branch1Sprite;
+    branch1Sprite.setTexture(branchTexture);
+    branch1Sprite.setPosition(WIDTH/2 + branch1Sprite.getGlobalBounds().width/2 - 70, 500);
+
+
+    Sprite branch2Sprite;
+    branch2Sprite.setTexture(branchTexture);
+    branch2Sprite.scale(-1,1);
+    branch2Sprite.setPosition(WIDTH/2 - branch2Sprite.getGlobalBounds().width/2 + 70, 200);
+
+    
+    vector<Sprite*> branches;
+    branches.push_back(&branch1Sprite);
+    branches.push_back(&branch2Sprite);
+
+    // for(int i=0; i<2; i++){
+    //     bool isLeft = rand()%2==1;
+    //     Sprite branch;
+    //     branch.setTexture(branchTexture);
+    //     if(isLeft){
+    //         if(branch.getScale().x<0){
+    //             branch.setScale(1,1);
+    //         }
+    //         branch.setPosition(WIDTH/2 + branch.getGlobalBounds().width/2 - 70, -branch.getGlobalBounds().height);
+    //     }else{
+    //         if(branch.getScale().x>0){
+    //             branch.setScale(-1,1);
+    //         }
+    //         branch.setPosition(WIDTH/2 - branch.getGlobalBounds().width/2 + 70, -branch.getGlobalBounds().height);
+    //     }
+
+    //     branches.push_back(&branch);
+    // }
 
     Event event;
+
+    int branchSpeed = 1;
 
     while (window.isOpen())
     {
@@ -90,7 +130,7 @@ int main(){
             beeSpeed = (rand()%200) + 200;
 
             float height = (rand()%500) + 400;
-            beeSprite.setPosition(1980, height);
+            beeSprite.setPosition(WIDTH, height);
 
             isBeeActive=true;
         }else{
@@ -108,7 +148,7 @@ int main(){
         }else{
             cloud1.setPosition(cloud1.getPosition().x + cloud1Speed/100, 0);
 
-            if (cloud1.getPosition().x > 1080+cloud1.getGlobalBounds().width){
+            if (cloud1.getPosition().x > WIDTH+cloud1.getGlobalBounds().width){
                 isCloud1Active = false;
             }
         }
@@ -126,6 +166,27 @@ int main(){
             }
         }
 
+    
+
+        for(Sprite* branch: branches){
+            if (branch->getPosition().y > treeSprite.getGlobalBounds().height - branch->getGlobalBounds().height){
+                bool isLeft = rand()%2==1;
+                if(isLeft){
+                    if(branch->getScale().x<0){
+                        branch->setScale(1,1);
+                    }
+                    branch->setPosition(WIDTH/2 + branch->getGlobalBounds().width/2 - 70, -branch->getGlobalBounds().height);
+                }else{
+                    if(branch->getScale().x>0){
+                        branch->setScale(-1,1);
+                    }
+                    branch->setPosition(WIDTH/2 - branch->getGlobalBounds().width/2 + 70, -branch->getGlobalBounds().height);
+                }
+            }
+            branch->setPosition(branch->getPosition().x, branch->getPosition().y + branchSpeed);
+        }
+
+    
 
 
         /***********************************
@@ -136,6 +197,9 @@ int main(){
         window.draw(cloud2);
         window.draw(cloud3);
         window.draw(treeSprite);
+        for(Sprite* branch: branches){
+            window.draw(*branch);
+        }
         window.draw(playerSprite);
         window.draw(beeSprite);
 
