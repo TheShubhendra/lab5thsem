@@ -1,6 +1,0 @@
-class Character{
-    public:
-    Character(){
-        
-    }
-}

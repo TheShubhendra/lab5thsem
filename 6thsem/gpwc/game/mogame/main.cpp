@@ -12,13 +12,6 @@
 using namespace std;
 using namespace sf;
 
-
-
-
-
-
-
-
 class Character{
 
     Texture texture1, texture2, texture3;
@@ -81,41 +74,6 @@ class Character{
 
 };
 
-class Background{
-        Sprite sa,sb,sc,sd,se;
-        Texture ta, tb, tc, td, te;
-
-        public:
-        Background(){
-            ta.loadFromFile("assets/background/1.png");
-            tb.loadFromFile("assets/background/2.png");
-            tc.loadFromFile("assets/background/3.png");
-            td.loadFromFile("assets/background/4.png");
-            te.loadFromFile("assets/background/5.png");
-
-            sa.setTexture(ta);
-            sb.setTexture(tb);
-            sc.setTexture(tc);
-            sd.setTexture(td);
-            se.setTexture(te);
-
-            sa.scale(Vector2f(WIDTH/ta.getSize().x,HEIGHT/ta.getSize().y));
-            sb.scale(Vector2f(WIDTH/tb.getSize().x,HEIGHT/tb.getSize().y));
-            sc.scale(Vector2f(WIDTH/tc.getSize().x,HEIGHT/tc.getSize().y));
-            sd.scale(Vector2f(WIDTH/td.getSize().x,HEIGHT/td.getSize().y));
-            se.scale(Vector2f(WIDTH/te.getSize().x,HEIGHT/te.getSize().y));
-        
-        }
-
-        void draw(RenderWindow *window){
-            window->draw(sa);
-            window->draw(sb);
-            window->draw(sc);
-            window->draw(sd);
-            window->draw(se);
-        }
-};
-
 
 int main()
 {
@@ -146,7 +104,6 @@ int main()
     spriteBackground.setPosition(0, 0);
     spriteBackground.scale(Vector2f(WIDTH/textureBackground.getSize().x,HEIGHT/textureBackground.getSize().y));
 
-    Background background = Background();
     Character character = Character();
 
     Pipe::pipes.push_back(new Pipe());
@@ -179,7 +136,6 @@ int main()
         if(character.checkColision(Pipe::pipes)){
             window.clear();
             window.draw(spriteBackground);
-            // background.draw(&window);
             scoreBoard.setString("Score: "+to_string(Pipe::score));
             window.draw(scoreBoard);
             character.draw(&window);
@@ -187,7 +143,9 @@ int main()
             window.display();
             break;
         }
-
+        if (Keyboard::isKeyPressed(Keyboard::Escape)){
+            window.close();
+        }
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)

@@ -13,8 +13,8 @@ float Pipe::speed = 0.35;
 float Pipe::acceleration = 0.04;
 int Pipe::gap = 200;
 
-// static Sprite coin;
-// static Texture coin_t;
+sf::Sprite coin;
+sf::Texture coin_t;
 Pipe::Pipe(){
     this->clock = sf::Clock();
     int upper_height = (std::rand()%400)+100;

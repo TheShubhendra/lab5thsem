@@ -15,10 +15,12 @@ class Pipe{
         static sf::Clock spawnClock;
         static double spawnElapsed;
 
+
     public:
         static int score;
         static std::vector<Pipe*> pipes;
-
+        static sf::Sprite coin;
+        static sf::Texture coin_t;
         Pipe();
         void draw(sf::RenderWindow* window);
         void move();
