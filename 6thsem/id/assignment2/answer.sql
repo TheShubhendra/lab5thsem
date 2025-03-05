@@ -1,0 +1,19 @@
+-- select name, dept_name from instructor;
+-- select  * from instructor where dept_name='Physics' and salary<90000;
+-- select name from instructor where dept_name != 'Comp. Sci.'
+-- select distinct dept_name from instructor;
+-- select course_id from teaches where semester='Spring' and year=2009;
+-- select title from course where dept_name = 'Comp. Sci.' and credits != 3;
+-- select * from course order by dept_name desc;
+-- alter table instructor add column date_of_join date;
+-- update instructor set date_of_join = '2025/10/10';
+-- alter table department rename column dept_name to department;
+-- alter table course rename column dept_name to department;
+-- alter table faculty_info rename column dept_name to department;
+-- alter table prereq rename to prerequired;
+-- alter table prerequired rename column course_id to sub_code;
+-- alter table instructor modify name varchar(50);
+-- alter table instructor rename to Faculty_Info
+-- alter table course modify course_id varchar(8);
+-- delete from prerequired
+-- alter table department rename column building to builder;

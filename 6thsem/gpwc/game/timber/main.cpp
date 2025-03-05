@@ -63,7 +63,7 @@ int main(){
     Sprite playerSprite;
     playerSprite.setTexture(playerTexture);
     playerSprite.setScale(1.5,1.5);
-    playerSprite.setPosition(WIDTH/2 - playerSprite.getGlobalBounds().width/2, treeSprite.getGlobalBounds().height-playerSprite.getGlobalBounds().height);
+    playerSprite.setPosition(WIDTH/2 - playerSprite.getGlobalBounds().width/2 - treeSprite.getGlobalBounds().width, treeSprite.getGlobalBounds().height-playerSprite.getGlobalBounds().height);
 
 
     Texture branchTexture;
@@ -78,31 +78,33 @@ int main(){
     Sprite branch2Sprite;
     branch2Sprite.setTexture(branchTexture);
     branch2Sprite.scale(-1,1);
-    branch2Sprite.setPosition(WIDTH/2 - branch2Sprite.getGlobalBounds().width/2 + 70, 200);
+    branch2Sprite.setPosition(WIDTH/2 - branch2Sprite.getGlobalBounds().width/2 + 70, 100);
 
     
     vector<Sprite*> branches;
     branches.push_back(&branch1Sprite);
     branches.push_back(&branch2Sprite);
 
-    // for(int i=0; i<2; i++){
-    //     bool isLeft = rand()%2==1;
-    //     Sprite branch;
-    //     branch.setTexture(branchTexture);
-    //     if(isLeft){
-    //         if(branch.getScale().x<0){
-    //             branch.setScale(1,1);
-    //         }
-    //         branch.setPosition(WIDTH/2 + branch.getGlobalBounds().width/2 - 70, -branch.getGlobalBounds().height);
-    //     }else{
-    //         if(branch.getScale().x>0){
-    //             branch.setScale(-1,1);
-    //         }
-    //         branch.setPosition(WIDTH/2 - branch.getGlobalBounds().width/2 + 70, -branch.getGlobalBounds().height);
-    //     }
+    
+    for(int i=0; i<2; i++){
+        bool isLeft = rand()%2==1;
+        Sprite branch;
+        branch.setTexture(branchTexture);
+        int yPos = 100*i + 100;
+        if(isLeft){
+            if(branch.getScale().x<0){
+                branch.setScale(1,1);
+            }
+            branch.setPosition(WIDTH/2 + branch.getGlobalBounds().width/2 - 70, yPos);
+        }else{
+            if(branch.getScale().x>0){
+                branch.setScale(-1,1);
+            }
+            branch.setPosition(WIDTH/2 - branch.getGlobalBounds().width/2 + 70, yPos);
+        }
 
-    //     branches.push_back(&branch);
-    // }
+        // branches.push_back(&branch);
+    }
 
     Event event;
 
@@ -118,6 +120,14 @@ int main(){
         if (Keyboard::isKeyPressed(Keyboard::Escape)){
             window.close();
         }
+
+        if (Keyboard::isKeyPressed(Keyboard::Left)){
+            playerSprite.setPosition(WIDTH/2 - playerSprite.getGlobalBounds().width/2 - treeSprite.getGlobalBounds().width, treeSprite.getGlobalBounds().height-playerSprite.getGlobalBounds().height);
+        }
+        if (Keyboard::isKeyPressed(Keyboard::Right)){
+            playerSprite.setPosition(WIDTH/2 - playerSprite.getGlobalBounds().width/2 + treeSprite.getGlobalBounds().width, treeSprite.getGlobalBounds().height-playerSprite.getGlobalBounds().height);
+        }
+        
 
         while(window.pollEvent(event));
 
