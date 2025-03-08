@@ -74,6 +74,7 @@ void Pipe::drawAll(sf::RenderWindow* window){
 
 
     spawnElapsed += spawnClock.restart().asSeconds();
+
     if(spawnElapsed >= 0.8/speed){
         spawnElapsed = 0.0;
         Pipe::addPipe();

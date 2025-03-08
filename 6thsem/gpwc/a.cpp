@@ -3,6 +3,7 @@
 using namespace std;
 
 namespace Sec28{
+
     void ass1(){
         cout << "Assignment 1 of sec 28" << endl;
     }
@@ -12,7 +13,7 @@ namespace Sec28{
 }
 
 
-namespace Sec29{
+namespace Sec28{
     void ass1(){
         cout << "Assignment 1 of sec 29" << endl;
     }
@@ -25,6 +26,6 @@ namespace Sec29{
 
 int main(){
     Sec28::ass1();
-    Sec29::ass2();
+
     return 0;
 }
