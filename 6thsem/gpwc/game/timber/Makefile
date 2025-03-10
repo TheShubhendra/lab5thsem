@@ -1,4 +1,3 @@
 build:
-	g++ -c main.cpp
-	g++ main.o -o game -lsfml-graphics -lsfml-window -lsfml-system
+	g++ main.cpp -o game -lsfml-graphics -lsfml-window -lsfml-system
 	./game
