@@ -1,15 +1,13 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <cmath> // For sin, cos
 #define WIDTH 1920
 #define HEIGHT 1080
 
 using namespace sf;
 using namespace std;
 
-
-
-int main(){
-    
+int main() {
     RenderWindow window(VideoMode(WIDTH, HEIGHT), "Timber", Style::Fullscreen);
 
     Texture backgroundTexture;
@@ -18,34 +16,15 @@ int main(){
     Sprite backgroundSprite;
     backgroundSprite.setTexture(backgroundTexture);
 
-
     Texture treeTexture;
     treeTexture.loadFromFile("graphics/tree.png");
-    std::cout << "FDJFK " << WIDTH ;
 
     Sprite treeSprite;
     treeSprite.setTexture(treeTexture);
-    treeSprite.setPosition(WIDTH/2-treeSprite.getLocalBounds().width/2,0);
-    // treeSprite.setScale(1, 1.2);
+    treeSprite.setPosition(WIDTH / 2 - treeSprite.getLocalBounds().width / 2, 0);
 
-    Sprite auxialiryTree1;
-    auxialiryTree1.setTexture(treeTexture);
-    auxialiryTree1.setScale(0.5,0.87);
-    auxialiryTree1.setPosition(120, 0);
-
-    Sprite auxialiryTree2;
-    auxialiryTree2.setTexture(treeTexture);
-
-
-    Sprite auxialiryTree3;
-    auxialiryTree3.setTexture(treeTexture);
-
-    Sprite auxialiryTree4;
-    auxialiryTree4.setTexture(treeTexture);
-    
     Texture cloudTexture;
     cloudTexture.loadFromFile("graphics/cloud.png");
-
 
     Sprite cloud1, cloud2, cloud3;
     cloud1.setTexture(cloudTexture);
@@ -53,8 +32,8 @@ int main(){
     cloud3.setTexture(cloudTexture);
 
     cloud1.setPosition(-cloud1.getGlobalBounds().width, -10);
-    cloud2.setPosition(WIDTH/2-cloud2.getGlobalBounds().width,30);
-    cloud3.setPosition(WIDTH/2, 75);
+    cloud2.setPosition(WIDTH / 2 - cloud2.getGlobalBounds().width, 30);
+    cloud3.setPosition(WIDTH / 2, 75);
 
     cloud1.setScale(1.3, 1);
     cloud2.setScale(0.7, 1);
@@ -65,14 +44,14 @@ int main(){
     Sprite beeSprite;
     beeSprite.setTexture(beeTexture);
 
-
+    // Circular motion variables
+    float radius = 150.0f; // Radius of the circular motion
+    float angle = 0.0f;    // Initial angle
+    float centerX = WIDTH / 2;  // Center of the circle (x)
+    float centerY = HEIGHT / 2; // Center of the circle (y)
+    float beeSpeed = 0.05f; // Speed of the circular motion
 
     bool isBeeActive;
-    int beeSpeed;
-    bool isCloud1Active, isCloud2Active;
-    float cloud1Speed, cloud2Speed;
-
-
 
     Texture playerTexture;
     playerTexture.loadFromFile("graphics/player.png");
@@ -81,68 +60,24 @@ int main(){
     axeTexture.loadFromFile("graphics/axe.png");
     Sprite axeSprite;
     axeSprite.setTexture(axeTexture);
-    
 
     Sprite playerSprite;
     playerSprite.setTexture(playerTexture);
-    playerSprite.setScale(1.5,1.5);
-    playerSprite.setPosition(WIDTH/2 - playerSprite.getGlobalBounds().width/2 - treeSprite.getGlobalBounds().width, treeSprite.getGlobalBounds().height-playerSprite.getGlobalBounds().height);
+    playerSprite.setScale(1.5, 1.5);
+    playerSprite.setPosition(WIDTH / 2 - playerSprite.getGlobalBounds().width / 2 - treeSprite.getGlobalBounds().width, treeSprite.getGlobalBounds().height - playerSprite.getGlobalBounds().height);
     axeSprite.setPosition(playerSprite.getPosition().x, playerSprite.getPosition().y);
-
-
-    Texture branchTexture;
-    branchTexture.loadFromFile("graphics/branch.png");
-
-
-    Sprite branch1Sprite;
-    branch1Sprite.setTexture(branchTexture);
-    branch1Sprite.setPosition(WIDTH/2 + branch1Sprite.getGlobalBounds().width/2 - 70, 500);
-
-
-    Sprite branch2Sprite;
-    branch2Sprite.setTexture(branchTexture);
-    branch2Sprite.scale(-1,1);
-    branch2Sprite.setPosition(WIDTH/2 - branch2Sprite.getGlobalBounds().width/2 + 70, 100);
-
-    
-    vector<Sprite*> branches;
-
-    
-    for(int i=0; i<3; i++){
-        bool isLeft = rand()%2==1;
-        Sprite* branch = new Sprite();
-        branch->setTexture(branchTexture);
-        int yPos = 600*i;
-        if(isLeft){
-            if(branch->getScale().x<0){
-                branch->setScale(1,1);
-            }
-            branch->setPosition(WIDTH/2 + branch->getGlobalBounds().width/2 - 70, yPos);
-        }else{
-            if(branch->getScale().x>0){
-                branch->setScale(-1,1);
-            }
-            branch->setPosition(WIDTH/2 - branch->getGlobalBounds().width/2 + 70, yPos);
-        }
-
-        branches.push_back(branch);
-    }
 
     Event event;
 
-    int branchSpeed = 1;
-
     Clock clock;
     RectangleShape timeBar;
-    float timeBarStartWidth= 200;
+    float timeBarStartWidth = 200;
     float timeBarHeight = 20;
     timeBar.setSize(Vector2f(timeBarStartWidth, timeBarHeight));
     timeBar.setFillColor(Color::Red);
-    timeBar.setPosition(WIDTH/2 - timeBarStartWidth/2, 50);
+    timeBar.setPosition(WIDTH / 2 - timeBarStartWidth / 2, 50);
 
-
-
-    bool paused=true;
+    bool paused = true;
     int score = 0;
     Text messageText;
     Text scoreText;
@@ -157,112 +92,51 @@ int main(){
     scoreText.setCharacterSize(75);
     messageText.setCharacterSize(100);
 
-    scoreText.setColor(Color::White);
-    messageText.setColor(Color::White);
+    scoreText.setFillColor(Color::White);
+    messageText.setFillColor(Color::White);
 
     FloatRect textRect = messageText.getLocalBounds();
-    messageText.setOrigin(textRect.left + textRect.width/2.0f, textRect.top + textRect.height/2.0f);
-    messageText.setPosition(WIDTH/2, HEIGHT/2);
+    messageText.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+    messageText.setPosition(WIDTH / 2, HEIGHT / 2);
 
     scoreText.setPosition(20, 20);
-    while (window.isOpen())
-    {
 
-        while(window.pollEvent(event));
-        /*
-        Handle Player Input
-        */
+    while (window.isOpen()) {
 
+        while (window.pollEvent(event));
 
-        if (Keyboard::isKeyPressed(Keyboard::Escape)){
+        // Handle Player Input
+        if (Keyboard::isKeyPressed(Keyboard::Escape)) {
             window.close();
         }
-        if (Keyboard::isKeyPressed(Keyboard::Return)){
+        if (Keyboard::isKeyPressed(Keyboard::Return)) {
             paused = false;
         }
-        if (!paused){
-            if (Keyboard::isKeyPressed(Keyboard::Left)){
-                playerSprite.setPosition(WIDTH/2 - playerSprite.getGlobalBounds().width/2 - treeSprite.getGlobalBounds().width, treeSprite.getGlobalBounds().height-playerSprite.getGlobalBounds().height);
+
+        if (!paused) {
+            if (Keyboard::isKeyPressed(Keyboard::Left)) {
+                playerSprite.setPosition(WIDTH / 2 - playerSprite.getGlobalBounds().width / 2 - treeSprite.getGlobalBounds().width, treeSprite.getGlobalBounds().height - playerSprite.getGlobalBounds().height);
             }
-            if (Keyboard::isKeyPressed(Keyboard::Right)){
-                playerSprite.setPosition(WIDTH/2 - playerSprite.getGlobalBounds().width/2 + treeSprite.getGlobalBounds().width, treeSprite.getGlobalBounds().height-playerSprite.getGlobalBounds().height);
-            }
-
-
-
-            // if (Keyboard::isKeyPressed(Keyboard::Up)){
-
-            // }
-            
-
-
-
-            /***********************************
-             * Update the scene                *
-            ************************************/
-            if(!isBeeActive){
-                srand((int)time(0));
-                beeSpeed = (rand()%100) + 100;
-
-                float height = (rand()%500) + 400;
-                beeSprite.setPosition(WIDTH, height);
-
-                isBeeActive=true;
-            }else{
-                beeSprite.setPosition(beeSprite.getPosition().x - beeSpeed/100, beeSprite.getPosition().y);
-                if(beeSprite.getPosition().x < -beeSprite.getGlobalBounds().width){
-                    isBeeActive = false;
-                }
+            if (Keyboard::isKeyPressed(Keyboard::Right)) {
+                playerSprite.setPosition(WIDTH / 2 - playerSprite.getGlobalBounds().width / 2 + treeSprite.getGlobalBounds().width, treeSprite.getGlobalBounds().height - playerSprite.getGlobalBounds().height);
             }
 
-            if(!isCloud1Active){
-                
-                cloud1Speed = (rand()%20) + 1;
-                cloud1.setPosition(-cloud1.getGlobalBounds().width, 0);
-                isCloud1Active = true;
-            }else{
-                cloud1.setPosition(cloud1.getPosition().x + cloud1Speed/100, 0);
+            // Update bee position for circular motion
+            angle += beeSpeed;  // Increment the angle to move the bee
 
-                if (cloud1.getPosition().x > WIDTH+cloud1.getGlobalBounds().width){
-                    isCloud1Active = false;
-                }
+            // Calculate the new position using sine and cosine for circular motion
+            float x = centerX + radius * cos(angle);
+            float y = centerY + radius * sin(angle);
+
+            // Update bee position
+            beeSprite.setPosition(x, y);
+
+            // Keep the angle within 0 to 2*PI to prevent it from growing too large
+            if (angle > 2 * M_PI) {
+                angle -= 2 * M_PI;
             }
-
-            if(!isCloud2Active){
-
-                cloud2Speed = (rand()%20) + 1;
-                cloud2.setPosition(1910,0);
-                isCloud2Active = true;
-            }else{
-                cloud2.setPosition(cloud2.getPosition().x - cloud2Speed/100, 0);
-
-                if (cloud2.getPosition().x < -cloud2.getGlobalBounds().width){
-                    isCloud2Active = false;
-                }
-            }
-
-        
-
-        for(Sprite* branch: branches){
-            if (branch->getPosition().y > treeSprite.getGlobalBounds().height - branch->getGlobalBounds().height){
-                bool isLeft = rand()%2==1;
-                if(isLeft){
-                    if(branch->getScale().x<0){
-                        branch->setScale(1,1);
-                    }
-                    branch->setPosition(WIDTH/2 + branch->getGlobalBounds().width/2 - 70, -branch->getGlobalBounds().height);
-                }else{
-                    if(branch->getScale().x>0){
-                        branch->setScale(-1,1);
-                    }
-                    branch->setPosition(WIDTH/2 - branch->getGlobalBounds().width/2 + 70, -branch->getGlobalBounds().height);
-                }
-            }
-            branch->setPosition(branch->getPosition().x, branch->getPosition().y + branchSpeed);
         }
 
-
-    }
         /***********************************
          * Draw the scene                  *
         ************************************/
@@ -271,27 +145,16 @@ int main(){
         window.draw(cloud1);
         window.draw(cloud2);
         window.draw(cloud3);
-        window.draw(auxialiryTree1);
-        // window.draw(auxialiryTree2);
-        // window.draw(auxialiryTree3);
-        // window.draw(auxialiryTree4);
         window.draw(treeSprite);
-        for(Sprite* branch: branches){
-            window.draw(*branch);
-        }
         window.draw(playerSprite);
         window.draw(axeSprite);
         window.draw(beeSprite);
-        if (!paused){
+        if (!paused) {
             window.draw(timeBar);
             window.draw(scoreText);
-        }else{
+        } else {
             window.draw(messageText);
         }
         window.display();
-
     }
-    
-    
-    
-};
+}
