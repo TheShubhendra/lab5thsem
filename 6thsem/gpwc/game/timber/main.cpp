@@ -10,7 +10,7 @@ using namespace std;
 
 int main(){
     
-    RenderWindow window(VideoMode(WIDTH, HEIGHT), "Timber", Style::Fullscreen);
+    RenderWindow window(VideoMode(WIDTH, HEIGHT), "Timber", Style::Default);
 
     Texture backgroundTexture;
     backgroundTexture.loadFromFile("graphics/background.png");
@@ -21,7 +21,6 @@ int main(){
 
     Texture treeTexture;
     treeTexture.loadFromFile("graphics/tree.png");
-    std::cout << "FDJFK " << WIDTH ;
 
     Sprite treeSprite;
     treeSprite.setTexture(treeTexture);
@@ -31,11 +30,12 @@ int main(){
     Sprite auxialiryTree1;
     auxialiryTree1.setTexture(treeTexture);
     auxialiryTree1.setScale(0.5,0.87);
-    auxialiryTree1.setPosition(120, 0);
+    auxialiryTree1.setPosition(130, 0);
 
     Sprite auxialiryTree2;
     auxialiryTree2.setTexture(treeTexture);
-
+    auxialiryTree2.setScale(0.3, 0.77);
+    auxialiryTree2.setPosition(WIDTH - 435, 0);
 
     Sprite auxialiryTree3;
     auxialiryTree3.setTexture(treeTexture);
@@ -85,9 +85,12 @@ int main(){
 
     Sprite playerSprite;
     playerSprite.setTexture(playerTexture);
-    playerSprite.setScale(1.5,1.5);
-    playerSprite.setPosition(WIDTH/2 - playerSprite.getGlobalBounds().width/2 - treeSprite.getGlobalBounds().width, treeSprite.getGlobalBounds().height-playerSprite.getGlobalBounds().height);
-    axeSprite.setPosition(playerSprite.getPosition().x, playerSprite.getPosition().y);
+    playerSprite.setScale(-1.5,1.5);
+    playerSprite.setOrigin(treeSprite.getPosition().x, treeSprite.getPosition().y);
+    // playerSprite.move(-playerSprite.getGlobalBounds().width, 100);
+    // playerSprite.setPosition(WIDTH/2, HEIGHT/2);
+    // playerSprite.setPosition(WIDTH/2 - playerSprite.getGlobalBounds().width/2 - treeSprite.getGlobalBounds().width, treeSprite.getGlobalBounds().height-playerSprite.getGlobalBounds().height);
+    axeSprite.setPosition(playerSprite.getPosition().x, playerSprite.getPosition().y + playerSprite.getGlobalBounds().height/2);
 
 
     Texture branchTexture;
@@ -108,11 +111,11 @@ int main(){
     vector<Sprite*> branches;
 
     
-    for(int i=0; i<3; i++){
+    for(int i=0; i<5; i++){
         bool isLeft = rand()%2==1;
         Sprite* branch = new Sprite();
         branch->setTexture(branchTexture);
-        int yPos = 600*i;
+        int yPos = 175*i;
         if(isLeft){
             if(branch->getScale().x<0){
                 branch->setScale(1,1);
@@ -130,12 +133,12 @@ int main(){
 
     Event event;
 
-    int branchSpeed = 1;
+    int branchSpeed = 5;
 
     Clock clock;
     RectangleShape timeBar;
     float timeBarStartWidth= 200;
-    float timeBarHeight = 20;
+    float timeBarHeight = 30;
     timeBar.setSize(Vector2f(timeBarStartWidth, timeBarHeight));
     timeBar.setFillColor(Color::Red);
     timeBar.setPosition(WIDTH/2 - timeBarStartWidth/2, 50);
@@ -183,17 +186,16 @@ int main(){
         if (!paused){
             if (Keyboard::isKeyPressed(Keyboard::Left)){
                 playerSprite.setPosition(WIDTH/2 - playerSprite.getGlobalBounds().width/2 - treeSprite.getGlobalBounds().width, treeSprite.getGlobalBounds().height-playerSprite.getGlobalBounds().height);
+                for(Sprite* branch: branches){
+                    branch->setPosition(branch->getPosition().x, branch->getPosition().y + branchSpeed);
+                }
             }
             if (Keyboard::isKeyPressed(Keyboard::Right)){
                 playerSprite.setPosition(WIDTH/2 - playerSprite.getGlobalBounds().width/2 + treeSprite.getGlobalBounds().width, treeSprite.getGlobalBounds().height-playerSprite.getGlobalBounds().height);
+                for(Sprite* branch: branches){
+                    branch->setPosition(branch->getPosition().x, branch->getPosition().y + branchSpeed);
+                }
             }
-
-
-
-            // if (Keyboard::isKeyPressed(Keyboard::Up)){
-
-            // }
-            
 
 
 
@@ -258,7 +260,7 @@ int main(){
                     branch->setPosition(WIDTH/2 - branch->getGlobalBounds().width/2 + 70, -branch->getGlobalBounds().height);
                 }
             }
-            branch->setPosition(branch->getPosition().x, branch->getPosition().y + branchSpeed);
+            // branch->setPosition(branch->getPosition().x, branch->getPosition().y + branchSpeed);
         }
 
 
@@ -272,7 +274,7 @@ int main(){
         window.draw(cloud2);
         window.draw(cloud3);
         window.draw(auxialiryTree1);
-        // window.draw(auxialiryTree2);
+        window.draw(auxialiryTree2);
         // window.draw(auxialiryTree3);
         // window.draw(auxialiryTree4);
         window.draw(treeSprite);
