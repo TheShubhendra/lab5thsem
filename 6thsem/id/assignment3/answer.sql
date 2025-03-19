@@ -71,10 +71,25 @@ select length('Siksha O Anusandhan University') as len From dual;
 select initcap(name) from instructor;
 select name,substr(dept_name,1,3) from instructor;
 
+SELECT EXTRACT(MONTH FROM date_of_join) FROM instructor;
+SELECT TO_CHAR(date_of_join, 'DD/MM/YY') from instructor;
+SELECT id, 
+       ROUND(MONTHS_BETWEEN(SYSDATE, date_of_join)) AS experience_months
+FROM instructor;
 
 
+SELECT id,
+       FLOOR(MONTHS_BETWEEN(SYSDATE, date_of_join) / 12) AS experience_years,
+       MOD(ROUND(MONTHS_BETWEEN(SYSDATE, date_of_join)), 12) AS experience_months
+FROM instructor;
 
+select id, EXTRACT(day from date_of_join) from instructor;
 
+select SYSDATE + 15 from dual;
+select round(94204.27348, 2) from dual;
+select 5 + power(8,9) from dual;
+select power(6464312, 0.5) from dual;
+select lower('HELLO ITER') from dual;
 
 
 
