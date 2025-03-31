@@ -86,12 +86,14 @@ int main(){
     Sprite playerSprite;
     playerSprite.setTexture(playerTexture);
     playerSprite.setScale(-1.5,1.5);
-    playerSprite.setOrigin(treeSprite.getPosition().x, treeSprite.getPosition().y);
     // playerSprite.move(-playerSprite.getGlobalBounds().width, 100);
-    // playerSprite.setPosition(WIDTH/2, HEIGHT/2);
+    playerSprite.setPosition(WIDTH/2-playerSprite.getGlobalBounds().width, HEIGHT/2 + playerSprite.getGlobalBounds().height/2);
     // playerSprite.setPosition(WIDTH/2 - playerSprite.getGlobalBounds().width/2 - treeSprite.getGlobalBounds().width, treeSprite.getGlobalBounds().height-playerSprite.getGlobalBounds().height);
-    axeSprite.setPosition(playerSprite.getPosition().x, playerSprite.getPosition().y + playerSprite.getGlobalBounds().height/2);
-
+    std::cout << "Player sprite " << playerSprite.getPosition().x << " " << playerSprite.getPosition().y << "\n";
+    axeSprite.setPosition(playerSprite.getPosition().x, playerSprite.getPosition().y + playerSprite.getGlobalBounds().height/2 - 35);
+    
+    // axeSprite.setOrigin(axeSprite.getGlobalBounds().width, axeSprite.getGlobalBounds().height);
+    // axeSprite.setRotation(180);
 
     Texture branchTexture;
     branchTexture.loadFromFile("graphics/branch.png");
@@ -164,8 +166,10 @@ int main(){
     messageText.setColor(Color::White);
 
     FloatRect textRect = messageText.getLocalBounds();
+
     messageText.setOrigin(textRect.left + textRect.width/2.0f, textRect.top + textRect.height/2.0f);
-    messageText.setPosition(WIDTH/2, HEIGHT/2);
+    playerSprite.setPosition(WIDTH/2 + playerSprite.getLocalBounds().width/2 - treeSprite.getLocalBounds().width, treeSprite.getLocalBounds().height-playerSprite.getLocalBounds().height);
+
 
     scoreText.setPosition(20, 20);
     while (window.isOpen())
@@ -184,17 +188,29 @@ int main(){
             paused = false;
         }
         if (!paused){
+            std::cout << "Player sprite " << playerSprite.getPosition().x << " " << playerSprite.getPosition().y << "\n";
+
             if (Keyboard::isKeyPressed(Keyboard::Left)){
-                playerSprite.setPosition(WIDTH/2 - playerSprite.getGlobalBounds().width/2 - treeSprite.getGlobalBounds().width, treeSprite.getGlobalBounds().height-playerSprite.getGlobalBounds().height);
+
+                playerSprite.setScale(-1.5,1.5);
+                playerSprite.setPosition(WIDTH/2 + playerSprite.getLocalBounds().width/2 - treeSprite.getLocalBounds().width, treeSprite.getLocalBounds().height-playerSprite.getLocalBounds().height);
+                axeSprite.setPosition(playerSprite.getPosition().x, playerSprite.getPosition().y + playerSprite.getLocalBounds().height/2);
                 for(Sprite* branch: branches){
                     branch->setPosition(branch->getPosition().x, branch->getPosition().y + branchSpeed);
                 }
+                // std::cout << "Player sprite " << playerSprite.getPosition().x << " " << playerSprite.getPosition().y << "\n";
+
             }
             if (Keyboard::isKeyPressed(Keyboard::Right)){
-                playerSprite.setPosition(WIDTH/2 - playerSprite.getGlobalBounds().width/2 + treeSprite.getGlobalBounds().width, treeSprite.getGlobalBounds().height-playerSprite.getGlobalBounds().height);
+                // axeSprite.setRotation(90);
+                playerSprite.setScale(1.5,1.5);
+                playerSprite.setPosition(WIDTH/2 - playerSprite.getLocalBounds().width/2 + treeSprite.getLocalBounds().width, treeSprite.getLocalBounds().height-playerSprite.getLocalBounds().height);
+                axeSprite.setPosition(playerSprite.getPosition().x - playerSprite.getLocalBounds().width, playerSprite.getPosition().y + playerSprite.getGlobalBounds().height/2);
                 for(Sprite* branch: branches){
                     branch->setPosition(branch->getPosition().x, branch->getPosition().y + branchSpeed);
                 }
+                // std::cout << "Player sprite " << playerSprite.getPosition().x << " " << playerSprite.getPosition().y << "\n";
+
             }
 
 
