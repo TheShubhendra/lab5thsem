@@ -1,4 +1,5 @@
 #include<SFML/Graphics.hpp>
+#include "player.hpp"
 #include<iostream>
 
 #define WIDTH 1920
@@ -15,11 +16,10 @@ int main(){
     backgroundTexture.loadFromFile("graphics/background_sheet.png");
     View mainView(FloatRect(0, 0, WIDTH, HEIGHT));
 
-    Texture playerTexture;
-    playerTexture.loadFromFile("graphics/player.png");
+    Player player;
 
-    Sprite player;
-    player.setTexture(playerTexture);
+    mainView.setCenter(player.getCenter());
+    // mainView.setRotation(45);
 
     VertexArray background;
     background.setPrimitiveType(Quads);
@@ -61,17 +61,18 @@ int main(){
                 window.close();
             }
     
-            if(Keyboard::isKeyPressed(Keyboard::Left)){
-                player.move(-49,0);
+            if(Keyboard::isKeyPressed(Keyboard::Left) || Keyboard::isKeyPressed(Keyboard::A)){
+                player.move(Direction::LEFT);
+                
             }
-            if(Keyboard::isKeyPressed(Keyboard::Right)){
-                player.move(49,0);
+            if(Keyboard::isKeyPressed(Keyboard::Right) || Keyboard::isKeyPressed(Keyboard::D)){
+                player.move(Direction::RIGHT);
             }
-            if(Keyboard::isKeyPressed(Keyboard::Up)){
-                player.move(0,-49);
+            if(Keyboard::isKeyPressed(Keyboard::Up) || Keyboard::isKeyPressed(Keyboard::W)){
+                player.move(Direction::UP);
             }
-            if(Keyboard::isKeyPressed(Keyboard::Down)){
-                player.move(0,49);
+            if(Keyboard::isKeyPressed(Keyboard::Down) || Keyboard::isKeyPressed(Keyboard::S)){
+                player.move(Direction::DOWN);
             }
 
 
@@ -89,7 +90,7 @@ int main(){
 
         window.setView(mainView);
         window.draw(background, &backgroundTexture);
-        window.draw(player);
+        window.draw(player.getSprite());
 
 
 
