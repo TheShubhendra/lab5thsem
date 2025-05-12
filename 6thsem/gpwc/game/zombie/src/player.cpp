@@ -1,11 +1,16 @@
 #include "player.hpp"
-
+#include <math.h>
 
 
 Player::Player(){
     this->texture.loadFromFile("graphics/player.png");
     this->sprite.setTexture(this->texture);
-    this->speed = 20;
+    this->speed = 200;
+    resolution.x  = 1920;
+    resolution.y = 1080;
+    sprite.setPosition(1920/2, 1080/2);
+    FloatRect rect = sprite.getLocalBounds();
+    sprite.setOrigin(rect.left + rect.width/4, rect.height + rect.top/4);
 }
 
 Vector2f Player::getPosition(){
@@ -13,10 +18,7 @@ Vector2f Player::getPosition(){
 }
 
 Vector2f Player::getCenter(){
-    return Vector2f(
-        this->sprite.getGlobalBounds().left/2 + this->sprite.getGlobalBounds().width/2,
-        this->sprite.getGlobalBounds().top/2 + this->sprite.getGlobalBounds().height/2
-    );
+    return sprite.getPosition();
 }
 
 Sprite Player::getSprite(){
@@ -41,14 +43,29 @@ void Player::move(float time){
     }
 }
 
-void Player::update(float secondsElapsed, Vector2i moursePosition){
+void Player::update(float secondsElapsed, Vector2i mousePosition){
     if(isMoving){
         this->move(secondsElapsed);
     }
 
+    float angle = (atan2(mousePosition.y - resolution.y / 2,
+        mousePosition.x - resolution.x / 2)
+        * 180) / 3.141;
+
+    sprite.setRotation(angle);
+
 }
 
-void Player::startMove(Diretion direction){
+void Player::spawn(IntRect arena, Vector2f resolution, int tileSize){
+
+}
+
+void Player::startMove(Direction direction){
     this->direction = direction;
+    isMoving = true;
     
+}
+
+void Player::stopMove(){
+    isMoving = false;
 }

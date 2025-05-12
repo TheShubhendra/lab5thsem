@@ -10,7 +10,7 @@ enum class Direction{
 class Player{
     
     private:
-        const float START_SPEED = 200;
+        const float START_SPEED = 2000;
         const float START_HEALTH = 100;
 
 
@@ -19,6 +19,7 @@ class Player{
         float speed;
         Sprite sprite;
         Texture texture;
+        Vector2f resolution;
 
         Direction direction;
         bool isMoving;
@@ -31,6 +32,7 @@ class Player{
         Vector2f getPosition();
         Vector2f getCenter();
         Sprite getSprite();
+        void spawn(IntRect arena, Vector2f resolution, int tileSize);
         void startMove(Direction);
         void stopMove();
 
